@@ -1,0 +1,18 @@
+.page-link {
+    font-size: 0.875rem; /* default kecil */
+    padding: 0.4rem 0.75rem;
+    line-height: 1.25;
+}
+
+.page-item .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+}
+
+.page-item:first-child .page-link,
+.page-item:last-child .page-link {
+    font-weight: bold;
+    font-size: 0.875rem; /* sesuaikan jika perlu */
+}
