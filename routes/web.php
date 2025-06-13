@@ -68,7 +68,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 Route::get('/', function () {
-    return view('welcome');
+      return redirect('/login');
 });
 
 Auth::routes();
