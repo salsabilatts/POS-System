@@ -69,42 +69,61 @@
             </tbody>
         </table>
 
-        <!-- Total & Form Pembayaran -->
-        @if($total > 0)
+<!-- Total & Form Pembayaran -->
+<form action="{{ route('kasir.checkout') }}" method="POST">
+    @csrf
+    <input type="hidden" id="subtotal" value="{{ $total }}">
+
+    <div class="form-group">
+        <label for="discount_type">Jenis Diskon</label>
+        <select name="discount_type" id="discount_type" class="form-control">
+            <option value="">-- Pilih --</option>
+            <option value="percent">Persen (%)</option>
+            <option value="nominal">Nominal (Rp)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="discount_amount">Nilai Diskon</label>
+        <input type="number" name="discount_amount" id="discount_amount" class="form-control" value="0">
+    </div>
+
+    {{-- Tampilkan preview diskon, pajak, total --}}
+    <p>Diskon: Rp<span id="preview_diskon">0</span></p>
+    <p>Pajak (11%): Rp<span id="preview_tax">0</span></p>
+    <p><strong>Total: Rp<span id="total_display">{{ number_format($total, 0, ',', '.') }}</span></strong></p>
+    <input type="hidden" name="total_amount" id="total_amount" value="{{ $total }}">
+
+    <!-- Pilih Metode Pembayaran -->
+    <div class="mb-2">
+        <label for="payment_method" class="form-label">Metode Pembayaran:</label>
+        <select id="payment_method" name="payment_method" class="form-select" required onchange="togglePaymentMethod()">
+            <option value="">-- Pilih --</option>
+            <option value="cash">Cash</option>
+            <option value="qris">QRIS</option>
+        </select>
+    </div>
+
+    <!-- Form Cash -->
+    <div id="cash_section" style="display: none;">
         <div class="mb-2">
-            <strong>Total: Rp{{ number_format($total, 0, ',', '.') }}</strong>
+            <label for="paid_amount" class="form-label">Bayar (Cash):</label>
+            <input type="number" name="paid_amount" class="form-control" id="paid_amount">
         </div>
-        <form action="{{ route('kasir.checkout') }}" method="POST">
-            @csrf
-            <!-- Pilih Metode Pembayaran -->
-        <div class="mb-2">
-            <label for="payment_method" class="form-label">Metode Pembayaran:</label>
-            <select id="payment_method" name="payment_method" class="form-select" required onchange="togglePaymentMethod()">
-                <option value="">-- Pilih --</option>
-                <option value="cash">Cash</option>
-                <option value="qris">QRIS</option>
-            </select>
-        </div>
+    </div>
+    <p class="mt-2 text-success fw-bold">Kembalian: Rp<span id="preview_change">0</span></p>
 
-        <!-- Form Cash -->
-        <div id="cash_section" style="display: none;">
-            <div class="mb-2">
-                <label for="paid_amount" class="form-label">Bayar (Cash):</label>
-                <input type="number" name="paid_amount" class="form-control">
-            </div>
-        </div>
+    <!-- QRIS Section -->
+    <div id="qris_section" style="display: none; text-align:center;">
+        <p>Scan QR berikut untuk membayar:</p>
+        <img src="{{ asset('images/qr-codeTA.png') }}" alt="QRIS" style="max-width:200px;">
+        <div id="qris_timer" class="mt-2 text-muted"></div>
+    </div>
 
-        <!-- QRIS Section -->
-        <div id="qris_section" style="display: none; text-align:center;">
-            <p>Scan QR berikut untuk membayar:</p>
-            <img src="{{ asset('images/qr-codeTA.png') }}" alt="QRIS" style="max-width:200px;">
-            <div id="qris_timer" class="mt-2 text-muted"></div>
-        </div>
+    <!-- Tombol Submit -->
+    <button id="submit_button" type="submit" class="btn btn-success w-100">Bayar & Simpan</button>
+</form>
 
-        <!-- Tombol Submit -->
-        <button id="submit_button" type="submit" class="btn btn-success w-100">Bayar & Simpan</button>
-        </form>
-        </form>
         @if(session('id_transaksi'))
             <div class="mt-3">
                 <a href="{{ route('kasir.struk', session('id_transaksi')) }}" class="btn btn-sm btn-primary" target="_blank">
@@ -112,7 +131,6 @@
                 </a>
             </div>
         @endif
-    @endif
         @if(session('change'))
                 <div class="alert alert-info">
                     Kembalian: Rp{{ number_format(session('change'), 0, ',', '.') }}
@@ -121,6 +139,67 @@
     </div>
 </div>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    function calculateTotal() {
+        const subtotal = parseFloat($('#subtotal').val()) || 0;
+        const discountType = $('#discount_type').val();
+        const discountInput = parseFloat($('#discount_amount').val()) || 0;
+
+        let discount = 0;
+        if (discountType === 'percent') {
+            discount = subtotal * (discountInput / 100);
+        } else if (discountType === 'nominal') {
+            discount = discountInput;
+        }
+
+        const tax = (subtotal - discount) * 0.11;
+        const total = subtotal - discount + tax;
+
+        $('#preview_diskon').text(discount.toLocaleString('id-ID'));
+        $('#preview_tax').text(tax.toLocaleString('id-ID'));
+        $('#total_display').text(total.toLocaleString('id-ID'));
+        $('#total_amount').val(Math.round(total));
+    }
+
+    $('#discount_type, #discount_amount').on('input change', function () {
+        calculateTotal();
+    });
+
+    calculateTotal(); // hitung awal
+
+    function updateChange() {
+    const subtotal = parseFloat($('#subtotal').val()) || 0;
+    const discountType = $('#discount_type').val();
+    const discountInput = parseFloat($('#discount_amount').val()) || 0;
+
+    let discount = 0;
+    if (discountType === 'percent') {
+        discount = subtotal * (discountInput / 100);
+    } else if (discountType === 'nominal') {
+        discount = discountInput;
+    }
+
+    const tax = (subtotal - discount) * 0.11;
+    const total = subtotal - discount + tax;
+
+    const paid = parseFloat($('#paid_amount').val()) || 0;
+    const change = paid - total;
+
+    $('#preview_change').text(change > 0 ? change.toLocaleString('id-ID') : 0);
+    }
+
+    $('#discount_type, #discount_amount, #paid_amount').on('input change', function () {
+        calculateTotal();
+        updateChange();
+    });
+    updateChange();
+
+
+});
+</script>
 
 <script>
 function togglePaymentMethod() {

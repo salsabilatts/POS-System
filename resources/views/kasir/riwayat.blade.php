@@ -27,8 +27,10 @@
                     <th>#</th>
                     <th>Tanggal</th>
                     <th>Total</th>
-                    <th>Metode</th>
                     <th>Bayar</th>
+                    <th>Diskon</th>
+                    <th>Pajak</th>
+                    <th>Metode</th>
                     <th>Kembalian</th>
                     <th>Produk</th>
                 </tr>
@@ -39,8 +41,23 @@
                         <td>{{ $loop->iteration + ($transactions->currentPage() - 1) * $transactions->perPage() }}</td>
                         <td>{{ \Carbon\Carbon::parse($trx->transaction_date)->format('d M Y, H:i') }}</td>
                         <td>Rp{{ number_format($trx->total_amount, 0, ',', '.') }}</td>
-                        <td>{{ ucfirst($trx->payment_method) }}</td>
                         <td>Rp{{ number_format($trx->paid_amount, 0, ',', '.') }}</td>
+                        <td>
+                        @if($trx->discount_type)
+                            {{ ucfirst($trx->discount_type) }} - 
+                            Rp{{ number_format($trx->discount_amount, 0, ',', '.') }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td>
+                        @if($trx->tax)
+                            Rp{{ number_format($trx->tax, 0, ',', '.') }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                        <td>{{ ucfirst($trx->payment_method) }}</td>
                         <td>Rp{{ number_format($trx->change_amount, 0, ',', '.') }}</td>
                         <td>
                             <ul class="mb-0">

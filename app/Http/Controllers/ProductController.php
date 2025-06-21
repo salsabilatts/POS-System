@@ -22,10 +22,13 @@ class ProductController extends Controller
     {
         $request->validate([
             'id_product' => 'required|unique:product,id_product|string|max:20',
-            'product_name' => 'required|string|max:255',
+            'product_name' => 'required|unique:product',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'satuan' => 'required|string|max:50',
+            ], [
+            'id_product.unique' => 'ID produk sudah digunakan. Gunakan ID lain.',
+            'product_name.unique' => 'Nama produk sudah ada. Gunakan nama lain.',
         ]);
 
         Product::create($request->all());

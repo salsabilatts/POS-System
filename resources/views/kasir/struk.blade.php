@@ -19,8 +19,8 @@
             <tr>
                 <th>Produk</th>
                 <th>Qty</th>
-                <!-- <th>Harga</th>
-                <th>Subtotal</th> -->
+                <th style="text-align:right">Harga</th>
+                <!--<th>Subtotal</th> -->
             </tr>
         </thead>
         <tbody>
@@ -28,16 +28,44 @@
                 <tr>
                     <td>{{ $item->product->product_name }}</td>
                     <td>{{ $item->quantity }}</td>
-                    <!-- <td>Rp{{ number_format($item->product->price) }}</td>
-                    <td>Rp{{ number_format($item->subtotal) }}</td> -->
+                    <td style="text-align:right">Rp{{ number_format($item->product->price) }}</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 
-    <p class="total">Total: Rp{{ number_format($transaction->total_amount) }}</p>
+      <hr>
+    <table>
+            <tr>
+                <td>Diskon</td>
+                <td style="text-align:right">
+                    @if($transaction->discount_type)
+                       - Rp{{ number_format($transaction->discount_amount, 0, ',', '.') }}
+                    @else
+                        -
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <td>Pajak (11%)</td>
+                <td style="text-align:right">Rp{{ number_format($transaction->tax, 0, ',', '.') }}</td>
+            </tr>
+            <tr class="total">
+                <td>Total</td>
+                <td style="text-align:right">Rp{{ number_format($transaction->total_amount, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td>Dibayar</td>
+                <td style="text-align:right">Rp{{ number_format($transaction->paid_amount, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td>Kembalian</td>
+                <td style="text-align:right">Rp{{ number_format($transaction->change_amount, 0, ',', '.') }}</td>
+            </tr>
+        </table>
+    <!-- <p class="total">Total: Rp{{ number_format($transaction->total_amount) }}</p>
     <p class="total">Bayar: Rp{{ number_format($transaction->paid_amount) }}</p>
-    <p class="total">Kembalian: Rp{{ number_format($transaction->change_amount) }}</p>
+    <p class="total">Kembalian: Rp{{ number_format($transaction->change_amount) }}</p> -->
 
     <p align="center">~ Terima Kasih Telah Berbelanja di Toko Berkah~</p>
 </body>

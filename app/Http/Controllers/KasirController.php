@@ -71,9 +71,27 @@ public function checkout(Request $request)
         return redirect()->back()->with('error', 'Keranjang kosong');
     }
 
-    $total = array_sum(array_column($cart, 'subtotal'));
+    $subtotal = array_sum(array_column($cart, 'subtotal'));
     $paid = $request->paid_amount;
-    $change = $paid - $total;
+    $change = $paid - $subtotal;
+
+    $discountType = $request->discount_type; // 'percent' atau 'nominal'
+    $discountValue = (int) $request->discount_amount;
+    $discount = 0;
+
+    if ($discountType === 'percent') {
+        $discount = ($subtotal * $discountValue) / 100;
+    } elseif ($discountType === 'nominal') {
+        $discount = $discountValue;
+    }
+
+        // Tambahan: Pajak 10% setelah diskon
+    $tax = ($subtotal - $discount) * 0.11;
+
+    // Total akhir
+    $total = $subtotal - $discount + $tax;
+
+    $paid = $request->paid_amount;
 
     $method = $request->payment_method;
 
@@ -104,7 +122,10 @@ public function checkout(Request $request)
             'paid_amount' => $paid,
             'change_amount' => $change,
             'payment_method' => $paymentMethod,
-            'id_user' => Auth::id() 
+            'id_user' => Auth::id(),
+            'discount_type' => $discountType,
+            'discount_amount' => $discount,
+            'tax' => $tax,
         ]);
 
         foreach ($cart as $productId => $item) {
@@ -131,7 +152,8 @@ public function checkout(Request $request)
         } catch (\Exception $e) {
         DB::rollback();
         return redirect()->back()->with('error', 'Gagal menyimpan transaksi: ' . $e->getMessage());
-    }
+}
+    
 }
     public function cetakStruk($id)
     {
@@ -158,7 +180,7 @@ public function checkout(Request $request)
             }
 
             // Ambil data dengan pagination
-            $transactions = $query->paginate(10); // <= PENTING
+            $transactions = $query->paginate(10);
 
             return view('kasir.riwayat', compact('transactions'));
         }
