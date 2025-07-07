@@ -16,7 +16,7 @@
                 placeholder="Cari produk...">
         </div>
         <div class="col-md-6 text-end">
-            <a href="{{ route('products.create') }}" class="btn btn-success">Tambah Produk</a>
+            <a href="{{ route('admin.products.create') }}" class="btn btn-success">Tambah Produk</a>
         </div>
     </div>
 
@@ -49,9 +49,9 @@
                     <td>Rp{{ number_format($product->price, 0, ',', '.') }}</td>
                     <td>{{ $product->stock }}</td>
                     <td>
-                        <a href="{{ route('products.edit', $product->id_product) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{{ route('admin.products.edit', $product->id_product) }}" class="btn btn-warning btn-sm">Edit</a>
 
-                        <form action="{{ route('products.destroy', $product->id_product) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
+                        <form action="{{ route('admin.products.destroy', $product->id_product) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-danger btn-sm" type="submit">Hapus</button>

@@ -5,7 +5,7 @@
     <h2>Laporan Penjualan</h2>
 <div class="card mb-4">
     <div class="card-body">
-        <form action="{{ route('laporan.index') }}" method="GET" class="row g-3">
+        <form action="{{ route('admin.laporan.index') }}" method="GET" class="row g-3">
             <!-- Filter Harian -->
             <div class="col-md-3">
                 <label for="tanggal_awal" class="form-label">Tanggal Awal</label>

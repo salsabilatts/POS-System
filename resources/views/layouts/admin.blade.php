@@ -15,10 +15,10 @@
                 <a href="{{ route('admin.dashboard') }}" class="nav-link text-white">Dashboard</a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('products.index') }}" class="nav-link text-white">Produk</a>
+                <a href="{{ route('admin.products.index') }}" class="nav-link text-white">Produk</a>
             </li>
            <li class="nav-item">
-                <a href="{{ route('laporan.index') }}" class="nav-link text-white">Laporan Penjualan</a>
+                <a href="{{ route('admin.laporan.index') }}" class="nav-link text-white">Riwayat Penjualan</a>
             </li>
             <li class="nav-item mt-3">
             <form action="{{ route('logout') }}" method="POST">

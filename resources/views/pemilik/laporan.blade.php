@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2>Laporan Penjualan</h2>
+    <h2>Riwayat Penjualan</h2>
 <div class="card mb-4">
     <div class="card-body">
         <form action="{{ route('pemilik.laporan') }}" method="GET" class="row g-3">

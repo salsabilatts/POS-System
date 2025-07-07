@@ -29,7 +29,7 @@ class Transaction extends Model
     
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user'); // sesuaikan 'id_user' jika pakai nama lain
+        return $this->belongsTo(User::class, 'id_user');
     }
 
 }

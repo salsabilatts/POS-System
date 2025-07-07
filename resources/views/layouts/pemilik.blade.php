@@ -16,7 +16,12 @@
                 <a href="{{ route('pemilik.dashboard') }}" class="nav-link text-white">Dashboard</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="{{ route('pemilik.laporan') }}" class="nav-link text-white">Laporan Penjualan</a>
+                <a href="{{ route('pemilik.laporan') }}" class="nav-link text-white">Riwayat Penjualan</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('pemilik.cashflow') }}" class="nav-link text-white {{ request()->is('pemilik/laporan-cashflow') ? 'active' : '' }}">
+                    Laporan Cashflow
+                </a>
             </li>
             <li class="nav-item mt-3">
                 <form action="{{ route('logout') }}" method="POST">

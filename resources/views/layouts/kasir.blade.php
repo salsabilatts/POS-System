@@ -17,6 +17,11 @@
             <li class="nav-item">
                 <a href="{{ route('kasir.riwayat') }}" class="nav-link text-white">Riwayat Transaksi</a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('kasir.laporan') }}" class="nav-link text-white {{ request()->is('kasir/laporan-harian') ? 'active' : '' }}">
+                    Laporan Harian
+                </a>
+            </li>
             <li class="nav-item mt-3">
             <form action="{{ route('logout') }}" method="POST">
                 @csrf

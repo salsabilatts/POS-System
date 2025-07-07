@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <form action="{{ route('products.store') }}" method="POST">
+    <form action="{{ route('admin.products.store') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label for="id_product">ID Produk</label>
@@ -44,7 +44,7 @@
             <input type="number" name="stock" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary">Simpan</button>
-        <a href="{{ route('products.index') }}" class="btn btn-secondary">Batal</a>
+        <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Batal</a>
     </form>
 </div>
 @endsection
